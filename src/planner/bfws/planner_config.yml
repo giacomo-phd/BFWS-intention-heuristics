@@ -1,0 +1,192 @@
+#Planner Class Name
+BFWS: 
+  #Config parameters begin here
+  #portfolio_planner is currently not implemented
+  portfolio_planner: 
+    help    : 'builds a portfolio portfolio planner based on config specs'
+  argparse_module_path: 
+    cmd_arg:  
+      default : None #Leave empty if default lapkt_run.py module suffices
+      required: False
+      nargs   : '?'
+      action  : 'store'
+      help    : 'python module for parsing cmd args and running solver'
+  # Use this as example config
+  log_file: 
+  # cmd_args will be loaded in ArgumentParser python module
+    cmd_arg: 
+      default : 'log' #
+      required: False
+      nargs   : '?'
+      action  : 'store'
+      help    : 'log file name'
+    # 'var_name' is the name of an attribute (in pybind11_module.cxx)  
+    #    The attribute is exposed to python and user can use it to set value of an attribute in the object of C++ class
+    # 'fun_name' is the name of a setter method (in pybind11_module.cxx) 
+    #     The setter is exposed to python and user can use it to set value of a private attribute of the  C++ class
+    var_name: 'log_filename'   
+  plan_file: 
+    cmd_arg: 
+      default: 'plan.ipc' #
+      required: False
+      nargs   : '?'
+      action  : 'store'
+      help    : 'file name where solution plan will be stored'
+    var_name: 'plan_filename'
+  search_type: 
+    cmd_arg: 
+      default: 'BFWS-OL' #
+      required: False
+      choices:
+        # - 'BFWS-f5-landmarks'
+        # - 'BFWS-goalcount-only'
+        # - 'BFWS-f5'
+        # - 'BFWS-f5-initstate-relevant'
+        # - 'k-BFWS'
+        # - 'k-M-BFWS'
+        # - 'k-M-C-BFWS'
+        # - 'k-C-BFWS'
+        # - '1-C-BFWS'
+        # - '1-BFWS'
+        # - 'POLY-BFWS'
+        # - 'DUAL-C-BFWS'
+        # - 'DUAL-BFWS'
+        # - 'BFWS-goalcount-h3blind'
+        # - 'BFNOS'
+        - 'BFWS-OL'
+        - 'BFWS-OL-UTP'
+        - 'BFWS-OL-INIT'
+        - 'BFWS-OL-UTP-INIT'
+        - 'BFWS-OP'
+        - 'BFWS-OL-DUAL'
+      nargs   : '?'
+      action  : 'store'
+      help    : "specify a variant of BFWS - default 'BFWS-OL'"
+    var_name: 'search'
+  anytime: 
+    cmd_arg: 
+      default : False
+      required: False
+      action  : 'store_true'
+      help    : 'enable anytime planning'
+    var_name: 'anytime'
+  max_novelty:  
+    cmd_arg: 
+      default: 2
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'Max bound for novelty computation'
+    var_name: 'max_novelty'
+  m_value:  
+    cmd_arg: 
+      default: 32
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'For M-variants of BFWS, increases the number of expanded nodes by the constant factor.'
+    var_name: 'm_value'
+  verbose: 
+    cmd_arg: 
+      default : False
+      required: False
+      action  : 'store_true'
+      help    : 'verbose standard output'
+    var_name: 'verbose'
+  run_id: 
+    cmd_arg: 
+      default : 0
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'a dummy id to differentiate between multiple runs of the same planner'
+  memory_limit: 
+    cmd_arg: 
+      default : 0
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'memory limit in MB'
+    var_name: 'memory_limit'
+  time_limit:
+    cmd_arg: 
+      default : 0
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'time limit in seconds'
+    var_name: 'time_limit'
+  fallback_backend: 
+    cmd_arg:
+      default : False
+      required: False
+      action  : 'store_true'
+      help    : 'fallback to backend planner if BFWS fails'
+    var_name: 'fallback_backend'
+  backend_type: 
+    cmd_arg: 
+      default: 'DUAL-BFWS'
+      required: False
+      choices:
+        - 'DUAL-BFWS'
+        - 'EXTERNAL'
+      nargs   : '?'
+      action  : 'store'
+      help    : 'Select backend planner options'
+    var_name: 'backend_type'
+  tol_max_depth:
+    cmd_arg: 
+      default : 18
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'max depth of trimmed open list'  
+    var_name: 'tol_max_depth'
+  seed:
+    cmd_arg: 
+      default : 42
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'seed for trimmed open list'
+    var_name: 'seed'
+  normal_ol:
+    cmd_arg: 
+      default : False
+      required: False
+      action  : 'store_true'
+      help    : 'use normal open list, false for trimmed open list'
+    var_name: 'normal_ol'
+  goalcount:
+    cmd_arg: 
+      default : False
+      required: False
+      action  : 'store_true'
+      help    : 'use goal count in BFWS-RPOP, false for Landmarks'
+    var_name: 'goalcount'
+  rpop_num_samples:
+    cmd_arg: 
+      default : 100
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'number of samples for RPOP heuristic'
+    var_name: 'rpop_num_samples'
+  rpop_max_ms:
+    cmd_arg: 
+      default : 10000
+      required: False
+      nargs   : '?'
+      type    : 'int'
+      action  : 'store'
+      help    : 'max time in ms for RPOP heuristic'
+    var_name: 'rpop_max_ms' 
+#END - Leave this line a empty line as it is
