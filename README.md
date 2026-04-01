@@ -1,96 +1,100 @@
-BFWS with Intention Based Heuristics
-=====
-Code for BFWS planners that implement the intention-based heuristics proposed in [**Goal Recognition as Planning: Deriving Heuristics from Intention Models**](https://arxiv.org/abs/2603.14824), to be presented at ICAPS 2026. 
-This code extends [LAPKT-Public](https://github.com/LAPKT-dev/LAPKT-public), and [LAPKT-BFNoS](https://github.com/grosa97/LAPKT-BFNoS).
+# BFWS with Intention Based Heuristics
 
+Code for BFWS planners that implement the intention-based heuristics proposed in:
 
-<!-- <ins>**Installation** -->
-Installation
--
+- Giacomo Rosa, Jean Honorio, Nir Lipovetzky, Sebastian Sardina. [**Goal Recognition as Planning: Deriving Heuristics from Intention Models**](https://arxiv.org/abs/2603.14824), To appearat [ICAPS 2026](https://icaps26.icaps-conference.org/).
+
+> [!NOTE]
+> This code extends [LAPKT-Public](https://github.com/LAPKT-dev/LAPKT-public), and [LAPKT-BFNoS](https://github.com/grosa97/LAPKT-BFNoS).
+
+## Installation
 
 Use Ubuntu >= 20, recommend later versions (22, 24) as cmake >= 3.19 is required.
 
-Build LAPKT by following the [Build instructions](developersguide/build.md). It is **required to also install the Tarski parser and grounder for this solver**, as described in the developers guide. Even though the FD grounder is used by default, LAPKT currently does not support axioms produced by the FD grounder for a small number of problems, and in such cases it automatically detects the axioms and falls back to the Tarski grounder.
+Build LAPKT by following the [Build instructions](developersguide/build.md). It is **required to also install the [Tarski](https://github.com/aig-upf/tarski) parser and grounder for this solver**, as described in the developers guide. Even though the FD grounder is used by default, LAPKT currently does not support axioms produced by the FD grounder for a small number of problems, and in such cases it automatically detects the axioms and falls back to the Tarski grounder.
 
 **Important**: Additional requirements before building.
 
 - Update submodule, run from project directory:
-		
-		git submodule update --init --recursive
-	
+
+	```shell
+	git submodule update --init --recursive
+	```
+
 	This is because *external_package/fd_translate* was updated compared to the main LAPKT 2.0 repo.
-	
+
 - Also required for build:
-	
-		sudo apt install python-is-python3
-	
+
+	```shell
+	sudo apt install python-is-python3
+	```
+
 	Because somewhere in the new _fd_translate_ files, _python_ is used instead of _python3_, so this is a suboptimal and temporary fix.
 
+## Usage
 
-Usage
--
+**Run `BFWS(f5)-OL_r` solver with FD grounder after building:**
 
-**Run $BFWS(f5)-OL_r$ solver with FD grounder after building:**
+```shell
+python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL [options]
 
-	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL [options]
+Options:
+	--time_limit [int]		Memory threshold in MB, 0 is no threshold (default: 0).
+	--memory_limit [int]		Time threshold in seconds, 0 is no threshold (default: 0).
+	--rpop_num_samples [int]	Number of sample relaxed plans extracted when using OL or OP (default: 100).
+	--rpop_max_ms [int]		Max time sampling relaxed plans for OL or OP in ms (default: 10000).
+	--seed [int]			Trimmed open list and OL/OP seed (default: 42).
+	--tol_max_depth [int]		Trimmed open list max depth (default: 18).
+	--normal_ol			Flag. Uses normal open list instead of trimmed open list.
+	--goalcount 			Flag. Substitutes hlm for goalcount heuristic for following variants.
+```
 
-   	Options:
-      --time_limit [int]		Memory threshold in MB, 0 is no threshold (default: 0).
-      --memory_limit [int]		Time threshold in seconds, 0 is no threshold (default: 0).
-      --rpop_num_samples [int]	Number of sample relaxed plans extracted when using OL or OP (default: 100).
-      --rpop_max_ms [int]		Max time sampling relaxed plans for OL or OP in ms (default: 10000).
-      --seed [int]			Trimmed open list and OL/OP seed (default: 42).
-      --tol_max_depth [int]		Trimmed open list max depth (default: 18).
-      --normal_ol			Flag. Uses normal open list instead of trimmed open list.
-      --goalcount 			Flag. Substitutes hlm for goalcount heuristic for following variants.
-      
+**Run `BFWS(f5)-OL_r-UTP` solver with FD grounder after building:**
 
-**Run $BFWS(f5)-OL_r-UTP$ solver with FD grounder after building:**
+```shell
+python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL-UTP [options]
+```
 
-	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL-UTP [options]
+**Run `BFWS(f5)-OL_r-DUAL` solver with FD grounder after building:**
 
-**Run $BFWS(f5)-OL_r-DUAL$ solver with FD grounder after building:**
+```shell
+python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL-DUAL [options]
+```
 
-	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL-DUAL [options]
- 
-Note: time_limit and memory_limit refer to the frontend solver thresholds when using $BFWS(f5)-OL_r-DUAL$.
- 
-**Run $BFWS(f5)-OL_r$ solver with normal open list and goal counting, as Table 1:**
+> [!NOTE]
+> `time_limit` and `memory_limit` refer to the frontend solver thresholds when using `BFWS(f5)-OL_r-DUAL`.
 
-	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL --normal_ol --goalcount[options]
+**Run `BFWS(f5)-OL_r` solver with normal open list and goal counting, as Table 1:**
 
-**Run $BFWS(f5)-OP_r$ solver with normal open list and goal counting, as Table 1:**
+```shell
+python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OL --normal_ol --goalcount[options]
+```
 
-	python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OP --normal_ol --goalcount[options]
+**Run `BFWS(f5)-OP_r` solver with normal open list and goal counting, as Table 1:**
 
-Implementation details
--
-<!-- <ins>**Implementation details** -->
+```shell
+python3 lapkt_package/lapkt.py BFWS --grounder FD -d <domain> -p <problem> --search_type BFWS-OP --normal_ol --goalcount[options]
+```
+
+## Implementation details
 
 - OL heuristic is implemented in the `src/node_eval/heuristics/rp_graph.hxx` file.
 - OL-UTP variant is in `src/node_eval/heuristics/rp_graph_utp.hxx` file.
 - The OP heuristic is in `src/node_eval/heuristics/rp_graph_op.hxx` file.
 - OL variants use the planner engine `src/engine/gs_bfws_3h.hxx`.
-- OP variant uses the planner engine `src/engine/gs_bfws_3h_op.hxx`. 
+- OP variant uses the planner engine `src/engine/gs_bfws_3h_op.hxx`.
 
 - The information extraction phase is computed at the beginning of the `start()` function in the engine files.
 - The online probability heuristics are computed in the `rp_fl_achieved(...)` function in the engine files.
 
-
-
-Authors
--
+## Authors
 
 - Giacomo Rosa <giacomo.rosa@student.unimelb.edu.au>
 - Nir Lipovetzky <nir.lipovetzky@unimelb.edu.au>
 - Jean Honorio <jean.honorio@unimelb.edu.au>
 - Sebastian Sardina <sebastian.sardina@rmit.edu.au>
 
-
-
-LAPKT
-=====
-
+## LAPKT
 
 ![LAPKT](cmake/docs/resources/logo/lapkt-low-resolution-logo-color-on-transparent-background.png)
 
@@ -117,12 +121,11 @@ Search engine components are meant to be modular, allowing users of LAPKT to
 assemble and combine features of different search engines to come up with customized
 search strategies, within reason and without sacrificing (much) efficiency. In order to
 do so, LAPKT makes heavy use of C++ templates and the Static Strategy design pattern.
-At the time of writing this, the modularity and decoupling of components isn't as high 
+At the time of writing this, the modularity and decoupling of components isn't as high
 as I would like, there's still a lot of work to do :)
 
 LAPKT is bound to change rapidly and dramatically over the next months, so please keep
 this in mind when using this library.
-
 
 ## Important platform requirements:
 
@@ -142,5 +145,5 @@ Introduction to LAPKT 4 Devs
 
 [Build instructions](developersguide/build.md)
 
-`cmake` is the primary tool used to build the LAPKT's C++(backend) source code. We also use it to generate Python/C++ library package which is ready to go as a `pypi` package. 
+`cmake` is the primary tool used to build the LAPKT's C++(backend) source code. We also use it to generate Python/C++ library package which is ready to go as a `pypi` package.
 
